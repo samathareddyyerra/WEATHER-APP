@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #weatherInfo {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h2>Weather App</h2>
+        <input type="text" id="locationInput" placeholder="Enter a location...">
+        <button onclick="getWeather()">Get Weather</button>
+        <div id="weatherInfo"></div>
+    </div>
+
+    <script>
+        function getWeather() {
+            console.log("Fetching weather...");
+            var apiKey = '6a32d4d7b5be8c054f9283df12305d2f'; // Replace 'YOUR_API_KEY' with your OpenWeatherMap API key
+            var locationInput = document.getElementById("locationInput").value.trim();
+            var weatherInfo = document.getElementById("weatherInfo");
+
+            if (locationInput !== "") {
+                console.log("Location input: ", locationInput);
+                var apiUrl = 'https://api.openweathermap.org/data/2.5/weather?q=' + locationInput + '&appid=' + apiKey + '&units=metric';
+                console.log("API URL: ", apiUrl);
+
+                fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("API Response: ", data);
+                    if (data.cod === 200) {
+                        var weatherDescription = data.weather[0].description;
+                        var temperature = data.main.temp;
+                        var cityName = data.name;
+                        weatherInfo.innerHTML = `<p>Location: ${cityName}</p>
+                                                <p>Temperature: ${temperature}°C</p>
+                                                <p>Weather: ${weatherDescription}</p>`;
+                    } else {
+                        weatherInfo.innerHTML = "Location not found.";
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    weatherInfo.innerHTML = "An error occurred while fetching data.";
+                });
+            } else {
+                weatherInfo.innerHTML = "Please enter a location.";
+            }
+        }
+    </script>
+</body>
+</html>
